@@ -52,7 +52,7 @@
                 </div>
                 <div>
                     <h1 class="text-base sm:text-lg font-bold tracking-tight leading-none">KreditKalkulator Pro</h1>
-                    <p class="text-xs text-slate-400 mt-0.5">Promo: <span class="text-emerald-400 font-semibold">NWG ADMIN AS LOAN (Admin Rp 0)</span></p>
+                    <p class="text-xs text-slate-400 mt-0.5">Skema: <span id="header-promo-label" class="text-emerald-400 font-semibold">FREE ADMIN (Admin Rp 0)</span></p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
@@ -192,13 +192,56 @@
                             </div>
 
                             <div class="space-y-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200/80">
-                                <!-- Biaya Admin (Locked Rp 0) -->
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-slate-600 flex items-center gap-1.5">
-                                        Biaya Admin
-                                        <span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">PROMO</span>
-                                    </span>
-                                    <span class="font-bold text-emerald-600">Rp 0</span>
+                                <!-- Pilihan Skema Biaya Admin -->
+                                <div class="space-y-2 pb-2 border-b border-slate-200/80">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-semibold text-slate-700">Skema Biaya Admin</span>
+                                        <span id="admin-scheme-badge" class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">FREE ADMIN</span>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-1.5" id="admin-mode-buttons">
+                                        <button type="button" onclick="selectAdminMode('free')" data-admin-mode="free" class="admin-mode-btn py-1.5 px-2 rounded-lg text-[11px] font-bold border border-blue-600 bg-blue-600 text-white shadow-sm transition">
+                                            Free Admin
+                                        </button>
+                                        <button type="button" onclick="selectAdminMode('as_loan')" data-admin-mode="as_loan" class="admin-mode-btn py-1.5 px-2 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
+                                            Admin As Loan
+                                        </button>
+                                        <button type="button" onclick="selectAdminMode('upfront')" data-admin-mode="upfront" class="admin-mode-btn py-1.5 px-2 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
+                                            Bayar Awal (TDP)
+                                        </button>
+                                    </div>
+
+                                    <!-- Nominal Biaya Admin -->
+                                    <div id="admin-fee-input-wrapper" class="pt-1 hidden">
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <label class="text-slate-600 font-medium">Nominal Biaya Admin</label>
+                                            <span id="admin-mode-hint" class="text-[10px] font-semibold text-blue-600">Masuk ke pokok NTF</span>
+                                        </div>
+                                        <div class="relative">
+                                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-xs font-semibold">Rp</span>
+                                            <input type="text" id="input-biaya-admin" value="0" oninput="handleDecimalCurrencyInput(this); calculateInstallment();" class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                        </div>
+                                        <div class="flex gap-1.5 mt-1.5">
+                                            <button type="button" onclick="setQuickAdminFee(150000)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">+150rb</button>
+                                            <button type="button" onclick="setQuickAdminFee(200000)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">+200rb</button>
+                                            <button type="button" onclick="setQuickAdminFee(250000)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">+250rb</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kolom Manual Admin Lain-lain -->
+                                <div class="space-y-1.5 pb-2 border-b border-slate-200/80">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <label for="input-admin-lain" class="text-xs font-semibold text-slate-700">Biaya Admin Lain-lain (Manual)</label>
+                                        <select id="select-admin-lain-mode" onchange="calculateInstallment()" class="text-[11px] font-semibold bg-white border border-slate-300 rounded-md px-2 py-0.5 text-slate-700 focus:ring-1 focus:ring-blue-500 outline-none">
+                                            <option value="as_loan">Masuk NTF (As Loan)</option>
+                                            <option value="upfront">Bayar Awal (TDP)</option>
+                                        </select>
+                                    </div>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-xs font-semibold">Rp</span>
+                                        <input type="text" id="input-admin-lain" value="0" placeholder="0" oninput="handleDecimalCurrencyInput(this); calculateInstallment();" class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <p class="text-[10px] text-slate-500">Opsional: isi manual jika ada biaya admin tambahan (misal admin toko/agen/fidusia).</p>
                                 </div>
 
                                 <!-- Asuransi Aset -->
@@ -282,11 +325,11 @@
                                     <div class="text-[10px] text-blue-600 mt-1">Flat / thn</div>
                                 </div>
                                 <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5">
-                                    <div class="text-[10px] font-semibold text-slate-500">Est. Effective</div>
-                                    <div id="display-effective-rate" class="font-bold text-slate-800 text-sm sm:text-base mt-0.5">42,46%</div>
-                                    <div class="text-[10px] text-slate-400 mt-1">Anuitas p.a</div>
-                                </div>
-                            </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 sm:text-right min-w-[205px]">
+                            <p class="text-xs text-slate-300">Total Pokok Pembiayaan (NTF)</p>
+                            <p id="res-ntf" class="text-xl font-bold text-emerald-400 mt-0.5">Rp 8.151.725,60</p>
+                            <p id="res-admin-summary" class="text-[11px] text-slate-300 mt-1">Admin: <span class="text-emerald-300 font-semibold">Free (Rp 0)</span></p>
+                            <p id="res-tdp-summary" class="text-[11px] text-amber-300 mt-0.5 hidden">Total Bayar Awal (TDP): <span class="font-bold">Rp 0</span></p>
                         </div>
                     </div>
                 </div>
@@ -355,16 +398,20 @@
                             <span id="brk-otr" class="font-semibold text-slate-800">Rp 7.520.000</span>
                         </div>
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
-                            <span class="text-slate-500">Uang Muka (Down Payment)</span>
+                            <span class="text-slate-500">Uang Muka (DP)</span>
                             <span id="brk-dp" class="font-semibold text-slate-800">Rp 0</span>
                         </div>
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
-                            <span class="text-slate-500">Pokok Barang (OTR - DP)</span>
+                            <span class="text-slate-500">Pokok Hutang Murni</span>
                             <span id="brk-net-otr" class="font-semibold text-slate-800">Rp 7.520.000</span>
                         </div>
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
-                            <span class="text-slate-500">Biaya Admin (Promo)</span>
-                            <span class="font-bold text-emerald-600">Rp 0</span>
+                            <span id="brk-admin-label" class="text-slate-500">Biaya Admin (Free Admin)</span>
+                            <span id="brk-admin-value" class="font-bold text-emerald-600">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span id="brk-admin-lain-label" class="text-slate-500">Admin Lain-lain (As Loan)</span>
+                            <span id="brk-admin-lain-value" class="font-semibold text-slate-800">Rp 0</span>
                         </div>
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
                             <span class="text-slate-500">Asuransi Aset (Capitalized)</span>
@@ -375,18 +422,23 @@
                             <span id="brk-asuransi-jiwa" class="font-semibold text-slate-800">Rp 0,00</span>
                         </div>
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="text-slate-500">Biaya Survei / Provisi / Lainnya</span>
+                            <span id="brk-biaya-lain" class="font-semibold text-slate-800">Rp 349.500,00</span>
+                        </div>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100 sm:col-span-2">
                             <span class="text-slate-500">Suku Bunga Pokok Tahunan</span>
                             <span id="brk-flat-rate" class="font-semibold text-blue-700">23,88% / tahun (1,99%/bln)</span>
                         </div>
-                        <div class="flex justify-between py-1.5 border-b border-slate-100">
-                            <span class="text-slate-500">Biaya Survei / Provisi / Lain</span>
-                            <span id="brk-biaya-lain" class="font-semibold text-slate-800">Rp 349.500,00</span>
-                        </div>
                     </div>
-
-                    <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center bg-slate-50 px-4 py-3 rounded-xl">
-                        <span class="font-bold text-slate-700 text-sm">Total Nilai Pembiayaan (NTF)</span>
-                        <span id="brk-total-ntf" class="font-extrabold text-blue-700 text-base">Rp 8.151.725,60</span>
+                    <div class="mt-4 pt-3 border-t border-slate-200 space-y-2 bg-slate-50 px-4 py-3 rounded-xl">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-700 text-sm">Total Nilai Pembiayaan (NTF)</span>
+                            <span id="brk-total-ntf" class="font-extrabold text-blue-700 text-base">Rp 8.151.725,60</span>
+                        </div>
+                        <div id="brk-tdp-row" class="hidden flex justify-between items-center pt-2 border-t border-slate-200/80 text-xs">
+                            <span class="font-semibold text-amber-800">Total Bayar Awal / TDP (DP + Admin Awal)</span>
+                            <span id="brk-total-tdp" class="font-bold text-amber-700 text-sm">Rp 0</span>
+                        </div>
                     </div>
                 </div>
 
@@ -508,6 +560,7 @@
 
         let currentCategory = 'elektronik';
         let currentTenor = 9;
+        let currentAdminMode = 'free'; // 'free' | 'as_loan' | 'upfront'
         let isScheduleVisible = true;
 
         // Format Angka ke Rupiah
@@ -588,6 +641,66 @@
             renderPresets();
             // Muat preset pertama dari kategori yang dipilih agar langsung akurat
             loadPreset(DB_CONFIG[cat].presets[0].id);
+        }
+
+        // Pilih Skema Biaya Admin ('free', 'as_loan', 'upfront')
+        function selectAdminMode(mode, silent = false) {
+            currentAdminMode = mode;
+            const inputWrapper = document.getElementById('admin-fee-input-wrapper');
+            const badge = document.getElementById('admin-scheme-badge');
+            const hint = document.getElementById('admin-mode-hint');
+            const headerLabel = document.getElementById('header-promo-label');
+            const adminInput = document.getElementById('input-biaya-admin');
+
+            document.querySelectorAll('.admin-mode-btn').forEach(btn => {
+                if (btn.getAttribute('data-admin-mode') === mode) {
+                    btn.className = 'admin-mode-btn py-1.5 px-2 rounded-lg text-[11px] font-bold border border-blue-600 bg-blue-600 text-white shadow-sm transition';
+                } else {
+                    btn.className = 'admin-mode-btn py-1.5 px-2 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition';
+                }
+            });
+
+            if (mode === 'free') {
+                inputWrapper.classList.add('hidden');
+                adminInput.value = '0';
+                badge.textContent = 'FREE ADMIN';
+                badge.className = 'text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded';
+                headerLabel.textContent = 'FREE ADMIN (Admin Rp 0)';
+                headerLabel.className = 'text-emerald-400 font-semibold';
+                if (!silent) showToast('Skema Free Admin aktif (Biaya Admin Rp 0)');
+            } else if (mode === 'as_loan') {
+                inputWrapper.classList.remove('hidden');
+                if (parseIndoNumber(adminInput.value) === 0) {
+                    adminInput.value = formatNumberInput(150000, 0);
+                }
+                badge.textContent = 'ADMIN AS LOAN';
+                badge.className = 'text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded';
+                hint.textContent = 'Dikapitalisasi ke pokok NTF';
+                hint.className = 'text-[10px] font-semibold text-blue-600';
+                headerLabel.textContent = 'ADMIN AS LOAN (Masuk NTF)';
+                headerLabel.className = 'text-blue-300 font-semibold';
+                if (!silent) showToast('Admin As Loan aktif (Biaya admin masuk ke cicilan/NTF)');
+            } else if (mode === 'upfront') {
+                inputWrapper.classList.remove('hidden');
+                if (parseIndoNumber(adminInput.value) === 0) {
+                    adminInput.value = formatNumberInput(150000, 0);
+                }
+                badge.textContent = 'BAYAR AWAL (TDP)';
+                badge.className = 'text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded';
+                hint.textContent = 'Dibayar tunai bersama DP';
+                hint.className = 'text-[10px] font-semibold text-amber-700';
+                headerLabel.textContent = 'ADMIN BAYAR DI AWAL (TDP)';
+                headerLabel.className = 'text-amber-300 font-semibold';
+                if (!silent) showToast('Admin Bayar di Awal aktif (Tidak menambah pokok NTF)');
+            }
+
+            calculateInstallment();
+        }
+
+        // Isi Cepat Nominal Biaya Admin
+        function setQuickAdminFee(amount) {
+            document.getElementById('input-biaya-admin').value = formatNumberInput(amount, 0);
+            calculateInstallment();
         }
 
         // Pilih Preset Bunga Bulanan (0.99%, 1.99%, 2.49%)
@@ -691,9 +804,12 @@
             document.getElementById('input-asuransi-aset').value = formatNumberInput(preset.asuransiAset, 2);
             document.getElementById('input-asuransi-jiwa').value = formatNumberInput(preset.asuransiJiwa, 2);
             document.getElementById('input-biaya-lain').value = formatNumberInput(preset.biayaLain, 2);
+            document.getElementById('input-admin-lain').value = '0';
+            document.getElementById('select-admin-lain-mode').value = 'as_loan';
             document.getElementById('input-flat-rate').value = preset.flatRate.toFixed(2);
             document.getElementById('input-monthly-rate').value = (preset.flatRate / 12).toFixed(2);
             updateRatePresetUI(preset.flatRate);
+            selectAdminMode('free', true);
 
             selectTenor(preset.tenor, false);
             calculateInstallment();
@@ -712,9 +828,10 @@
             document.getElementById('input-asuransi-aset').value = formatNumberInput(asuransiAset, 2);
             document.getElementById('input-asuransi-jiwa').value = formatNumberInput(asuransiJiwa, 2);
             document.getElementById('input-biaya-lain').value = formatNumberInput(biayaLain, 2);
+            document.getElementById('input-admin-lain').value = '0';
 
             if (showNotif) {
-                showToast('Biaya kapitalisasi direset ke rasio standar');
+                showToast('Biaya kapitalisasi & admin lain-lain direset');
             }
         }
 
@@ -755,12 +872,23 @@
             const asuransiAset = parseIndoNumber(document.getElementById('input-asuransi-aset').value);
             const asuransiJiwa = parseIndoNumber(document.getElementById('input-asuransi-jiwa').value);
             const biayaLain = parseIndoNumber(document.getElementById('input-biaya-lain').value);
+            const rawBiayaAdmin = currentAdminMode === 'free' ? 0 : parseIndoNumber(document.getElementById('input-biaya-admin').value);
+            const adminAsLoan = currentAdminMode === 'as_loan' ? rawBiayaAdmin : 0;
+            const adminUpfront = currentAdminMode === 'upfront' ? rawBiayaAdmin : 0;
+
+            const rawAdminLain = parseIndoNumber(document.getElementById('input-admin-lain').value);
+            const adminLainMode = document.getElementById('select-admin-lain-mode').value;
+            const adminLainAsLoan = adminLainMode === 'as_loan' ? rawAdminLain : 0;
+            const adminLainUpfront = adminLainMode === 'upfront' ? rawAdminLain : 0;
+
+            const totalTdp = dp + adminUpfront + adminLainUpfront;
+
             const flatRate = parseFloat(document.getElementById('input-flat-rate').value) || 0;
             const monthlyFlatRate = flatRate / 12;
 
             const netOtr = Math.max(0, otr - dp);
-            // Pokok Pembiayaan (NTF)
-            const ntf = netOtr + asuransiAset + asuransiJiwa + biayaLain;
+            // Pokok Pembiayaan (NTF) = Pokok Barang + Asuransi + Biaya Kapitalisasi + Admin As Loan + Admin Lain-lain (As Loan)
+            const ntf = netOtr + asuransiAset + asuransiJiwa + biayaLain + adminAsLoan + adminLainAsLoan;
 
             // Total Bunga Flat (Rumus: NTF * (Bunga Tahunan / 100) * (Tenor / 12))
             const totalInterestFlat = ntf * (flatRate / 100) * (currentTenor / 12);
@@ -804,15 +932,71 @@
             document.getElementById('res-total-payment').textContent = formatRupiah(totalPaymentRounded, 0);
             document.getElementById('display-effective-rate').textContent = effRate.toFixed(2).replace('.', ',') + '%';
 
+            // Update Ringkasan Admin & TDP di Kartu Utama
+            const resAdminSummary = document.getElementById('res-admin-summary');
+            const resTdpSummary = document.getElementById('res-tdp-summary');
+            if (currentAdminMode === 'free') {
+                resAdminSummary.innerHTML = `Admin: <span class="text-emerald-300 font-semibold">Free (Rp 0)</span>`;
+            } else if (currentAdminMode === 'as_loan') {
+                resAdminSummary.innerHTML = `Admin As Loan: <span class="text-blue-200 font-semibold">${formatRupiah(adminAsLoan, 0)} (NTF)</span>`;
+            } else {
+                resAdminSummary.innerHTML = `Admin Awal: <span class="text-amber-300 font-semibold">${formatRupiah(adminUpfront, 0)} (TDP)</span>`;
+            }
+
+            if (totalTdp > 0) {
+                resTdpSummary.classList.remove('hidden');
+                resTdpSummary.innerHTML = `Total Bayar Awal (TDP): <span class="font-bold">${formatRupiah(totalTdp, 0)}</span>`;
+            } else {
+                resTdpSummary.classList.add('hidden');
+            }
+
             // Update Breakdown NTF
             document.getElementById('brk-otr').textContent = formatRupiah(otr, 0);
             document.getElementById('brk-dp').textContent = formatRupiah(dp, 0);
             document.getElementById('brk-net-otr').textContent = formatRupiah(netOtr, 0);
+
+            const brkAdminLabel = document.getElementById('brk-admin-label');
+            const brkAdminValue = document.getElementById('brk-admin-value');
+            if (currentAdminMode === 'free') {
+                brkAdminLabel.textContent = 'Biaya Admin (Free Admin)';
+                brkAdminValue.textContent = 'Rp 0';
+                brkAdminValue.className = 'font-bold text-emerald-600';
+            } else if (currentAdminMode === 'as_loan') {
+                brkAdminLabel.textContent = 'Biaya Admin (Admin As Loan)';
+                brkAdminValue.textContent = formatRupiah(adminAsLoan, 0);
+                brkAdminValue.className = 'font-bold text-blue-700';
+            } else {
+                brkAdminLabel.textContent = 'Biaya Admin (Bayar Awal / TDP)';
+                brkAdminValue.textContent = `${formatRupiah(adminUpfront, 0)} (Non-NTF)`;
+                brkAdminValue.className = 'font-bold text-amber-700';
+            }
+
             document.getElementById('brk-asuransi-aset').textContent = formatRupiah(asuransiAset, 2);
             document.getElementById('brk-asuransi-jiwa').textContent = formatRupiah(asuransiJiwa, 2);
             document.getElementById('brk-biaya-lain').textContent = formatRupiah(biayaLain, 2);
+
+            const brkAdminLainLabel = document.getElementById('brk-admin-lain-label');
+            const brkAdminLainValue = document.getElementById('brk-admin-lain-value');
+            if (adminLainMode === 'as_loan') {
+                brkAdminLainLabel.textContent = 'Admin Lain-lain (As Loan)';
+                brkAdminLainValue.textContent = formatRupiah(rawAdminLain, 0);
+                brkAdminLainValue.className = rawAdminLain > 0 ? 'font-bold text-blue-700' : 'font-semibold text-slate-800';
+            } else {
+                brkAdminLainLabel.textContent = 'Admin Lain-lain (Bayar Awal / TDP)';
+                brkAdminLainValue.textContent = rawAdminLain > 0 ? `${formatRupiah(rawAdminLain, 0)} (Non-NTF)` : 'Rp 0';
+                brkAdminLainValue.className = rawAdminLain > 0 ? 'font-bold text-amber-700' : 'font-semibold text-slate-800';
+            }
+
             document.getElementById('brk-flat-rate').textContent = `${flatRate.toFixed(2).replace('.', ',')}% / tahun (${monthlyFlatRate.toFixed(2).replace('.', ',')}%/bln)`;
             document.getElementById('brk-total-ntf').textContent = formatRupiah(ntf, 2);
+
+            const brkTdpRow = document.getElementById('brk-tdp-row');
+            if (totalTdp > 0) {
+                brkTdpRow.classList.remove('hidden');
+                document.getElementById('brk-total-tdp').textContent = formatRupiah(totalTdp, 0);
+            } else {
+                brkTdpRow.classList.add('hidden');
+            }
 
             // Generate Jadwal Amortisasi
             generateAmortizationSchedule(ntf, installmentRounded, currentTenor, effRate);
@@ -922,13 +1106,33 @@
             const ntf = document.getElementById('res-ntf').textContent;
             const installment = document.getElementById('res-installment').textContent;
             const flatRate = parseFloat(document.getElementById('input-flat-rate').value) || 0;
+            const rawBiayaAdmin = currentAdminMode === 'free' ? 0 : parseIndoNumber(document.getElementById('input-biaya-admin').value);
+            const rawAdminLain = parseIndoNumber(document.getElementById('input-admin-lain').value);
+            const adminLainMode = document.getElementById('select-admin-lain-mode').value;
+
+            let promoHeader = 'FREE ADMIN (Admin Rp 0)';
+            let adminLine = '• Biaya Admin: Rp 0';
+            if (currentAdminMode === 'as_loan') {
+                promoHeader = 'ADMIN AS LOAN (Masuk Pokok NTF)';
+                adminLine = `• Biaya Admin (As Loan): ${formatRupiah(rawBiayaAdmin, 0)}`;
+            } else if (currentAdminMode === 'upfront') {
+                promoHeader = 'ADMIN BAYAR DI AWAL (TDP)';
+                adminLine = `• Biaya Admin (Bayar Awal): ${formatRupiah(rawBiayaAdmin, 0)}`;
+            }
+
+            let adminLainLine = '';
+            if (rawAdminLain > 0) {
+                const modeLabel = adminLainMode === 'as_loan' ? 'As Loan' : 'Bayar Awal';
+                adminLainLine = `• Admin Lain-lain (${modeLabel}): ${formatRupiah(rawAdminLain, 0)}\n`;
+            }
 
             const text = `*SIMULASI KREDIT ${catName.toUpperCase()}*\n` +
-                         `Promo: *FREE ADMIN AS LOAN (Admin Rp 0)*\n` +
+                         `Skema: *${promoHeader}*\n` +
                          `----------------------------------\n` +
                          `• Harga Barang (OTR): ${otr}\n` +
                          `• Uang Muka (DP): ${dp}\n` +
-                         `• Biaya Admin: Rp 0\n` +
+                         `${adminLine}\n` +
+                         `${adminLainLine}` +
                          `• Total Pembiayaan (NTF): ${ntf}\n` +
                          `• Bunga Pokok: ${flatRate.toFixed(2).replace('.', ',')}% / tahun\n` +
                          `• Tenor: *${currentTenor} Bulan*\n` +
