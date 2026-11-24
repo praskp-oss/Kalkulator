@@ -142,7 +142,7 @@
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Harga Barang (Total OTR)</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 font-semibold text-sm">Rp</span>
-                                <input type="text" id="input-otr" value="7.520.000" oninput="handleCurrencyInput(this); autoCalculateFees(); calculateInstallment();" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-bold text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition outline-none">
+                                <input type="text" id="input-otr" value="7.520.000" oninput="handleCurrencyInput(this); autoCalculateFees(); syncAdminFromPercent(); syncAdminLainFromPercent(); calculateInstallment();" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-bold text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition outline-none">
                             </div>
                         </div>
 
@@ -197,33 +197,27 @@
                                     <div class="flex items-center justify-between">
                                         <span class="text-xs font-semibold text-slate-700">Skema Biaya Admin</span>
                                         <span id="admin-scheme-badge" class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">FREE ADMIN</span>
-                                    </div>
-                                    <div class="grid grid-cols-3 gap-1.5" id="admin-mode-buttons">
-                                        <button type="button" onclick="selectAdminMode('free')" data-admin-mode="free" class="admin-mode-btn py-1.5 px-2 rounded-lg text-[11px] font-bold border border-blue-600 bg-blue-600 text-white shadow-sm transition">
-                                            Free Admin
-                                        </button>
-                                        <button type="button" onclick="selectAdminMode('as_loan')" data-admin-mode="as_loan" class="admin-mode-btn py-1.5 px-2 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
-                                            Admin As Loan
-                                        </button>
-                                        <button type="button" onclick="selectAdminMode('upfront')" data-admin-mode="upfront" class="admin-mode-btn py-1.5 px-2 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition">
-                                            Bayar Awal (TDP)
-                                        </button>
-                                    </div>
-
-                                    <!-- Nominal Biaya Admin -->
+                                    <!-- Nominal Biaya Admin (Nominal Rp & Persentase %) -->
                                     <div id="admin-fee-input-wrapper" class="pt-1 hidden">
                                         <div class="flex justify-between text-xs mb-1">
-                                            <label class="text-slate-600 font-medium">Nominal Biaya Admin</label>
+                                            <label class="text-slate-600 font-medium">Biaya Admin (% OTR / Nominal)</label>
                                             <span id="admin-mode-hint" class="text-[10px] font-semibold text-blue-600">Masuk ke pokok NTF</span>
                                         </div>
-                                        <div class="relative">
-                                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-xs font-semibold">Rp</span>
-                                            <input type="text" id="input-biaya-admin" value="0" oninput="handleDecimalCurrencyInput(this); calculateInstallment();" class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <div class="grid grid-cols-12 gap-1.5">
+                                            <div class="col-span-5 relative">
+                                                <input type="number" step="0.01" min="0" id="input-biaya-admin-pct" value="0" placeholder="0" oninput="handleAdminPercentInput(); calculateInstallment();" class="w-full pl-2.5 pr-6 py-1.5 bg-white border border-slate-300 rounded-lg text-blue-700 font-bold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                                <span class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 text-xs font-bold">%</span>
+                                            </div>
+                                            <div class="col-span-7 relative">
+                                                <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400 text-xs font-semibold">Rp</span>
+                                                <input type="text" id="input-biaya-admin" value="0" oninput="handleDecimalCurrencyInput(this); syncAdminPercentFromNominal(); calculateInstallment();" class="w-full pl-7 pr-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                            </div>
                                         </div>
                                         <div class="flex gap-1.5 mt-1.5">
-                                            <button type="button" onclick="setQuickAdminFee(150000)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">+150rb</button>
-                                            <button type="button" onclick="setQuickAdminFee(200000)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">+200rb</button>
-                                            <button type="button" onclick="setQuickAdminFee(250000)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">+250rb</button>
+                                            <button type="button" onclick="setQuickAdminPercent(2)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">2%</button>
+                                            <button type="button" onclick="setQuickAdminPercent(3)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">3%</button>
+                                            <button type="button" onclick="setQuickAdminPercent(5)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">5%</button>
+                                            <button type="button" onclick="setQuickAdminFee(150000)" class="flex-1 py-1 text-[10px] font-semibold bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 rounded transition">Rp 150rb</button>
                                         </div>
                                     </div>
                                 </div>
@@ -231,17 +225,23 @@
                                 <!-- Kolom Manual Admin Lain-lain -->
                                 <div class="space-y-1.5 pb-2 border-b border-slate-200/80">
                                     <div class="flex items-center justify-between gap-2">
-                                        <label for="input-admin-lain" class="text-xs font-semibold text-slate-700">Biaya Admin Lain-lain (Manual)</label>
+                                        <label for="input-admin-lain-pct" class="text-xs font-semibold text-slate-700">Biaya Admin Lain-lain (% / Manual)</label>
                                         <select id="select-admin-lain-mode" onchange="calculateInstallment()" class="text-[11px] font-semibold bg-white border border-slate-300 rounded-md px-2 py-0.5 text-slate-700 focus:ring-1 focus:ring-blue-500 outline-none">
                                             <option value="as_loan">Masuk NTF (As Loan)</option>
                                             <option value="upfront">Bayar Awal (TDP)</option>
                                         </select>
                                     </div>
-                                    <div class="relative">
-                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-xs font-semibold">Rp</span>
-                                        <input type="text" id="input-admin-lain" value="0" placeholder="0" oninput="handleDecimalCurrencyInput(this); calculateInstallment();" class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <div class="grid grid-cols-12 gap-1.5">
+                                        <div class="col-span-5 relative">
+                                            <input type="number" step="0.01" min="0" id="input-admin-lain-pct" value="0" placeholder="0" oninput="handleAdminLainPercentInput(); calculateInstallment();" class="w-full pl-2.5 pr-6 py-1.5 bg-white border border-slate-300 rounded-lg text-blue-700 font-bold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                            <span class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 text-xs font-bold">%</span>
+                                        </div>
+                                        <div class="col-span-7 relative">
+                                            <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400 text-xs font-semibold">Rp</span>
+                                            <input type="text" id="input-admin-lain" value="0" placeholder="0" oninput="handleDecimalCurrencyInput(this); syncAdminLainPercentFromNominal(); calculateInstallment();" class="w-full pl-7 pr-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                        </div>
                                     </div>
-                                    <p class="text-[10px] text-slate-500">Opsional: isi manual jika ada biaya admin tambahan (misal admin toko/agen/fidusia).</p>
+                                    <p class="text-[10px] text-slate-500">Isi persentase dari OTR atau langsung ketik nominal Rupiah.</p>
                                 </div>
 
                                 <!-- Asuransi Aset -->
@@ -666,6 +666,7 @@
             if (mode === 'free') {
                 inputWrapper.classList.add('hidden');
                 adminInput.value = '0';
+                document.getElementById('input-biaya-admin-pct').value = '0';
                 badge.textContent = 'FREE ADMIN';
                 badge.className = 'text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded';
                 headerLabel.textContent = 'FREE ADMIN (Admin Rp 0)';
@@ -674,7 +675,7 @@
             } else if (mode === 'as_loan') {
                 inputWrapper.classList.remove('hidden');
                 if (parseIndoNumber(adminInput.value) === 0) {
-                    adminInput.value = formatNumberInput(150000, 0);
+                    setQuickAdminPercent(2);
                 }
                 badge.textContent = 'ADMIN AS LOAN';
                 badge.className = 'text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded';
@@ -686,7 +687,7 @@
             } else if (mode === 'upfront') {
                 inputWrapper.classList.remove('hidden');
                 if (parseIndoNumber(adminInput.value) === 0) {
-                    adminInput.value = formatNumberInput(150000, 0);
+                    setQuickAdminPercent(2);
                 }
                 badge.textContent = 'BAYAR AWAL (TDP)';
                 badge.className = 'text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded';
@@ -700,10 +701,61 @@
             calculateInstallment();
         }
 
+        // Isi Cepat Persentase Biaya Admin (% dari OTR)
+        function setQuickAdminPercent(pct) {
+            document.getElementById('input-biaya-admin-pct').value = pct;
+            handleAdminPercentInput();
+            calculateInstallment();
+        }
+
         // Isi Cepat Nominal Biaya Admin
         function setQuickAdminFee(amount) {
             document.getElementById('input-biaya-admin').value = formatNumberInput(amount, 0);
+            syncAdminPercentFromNominal();
             calculateInstallment();
+        }
+
+        // Sinkronisasi Biaya Admin: dari % ke Rp
+        function handleAdminPercentInput() {
+            const otr = parseIndoNumber(document.getElementById('input-otr').value);
+            const pct = parseFloat(document.getElementById('input-biaya-admin-pct').value) || 0;
+            const nominal = Math.round((otr * pct) / 100);
+            document.getElementById('input-biaya-admin').value = formatNumberInput(nominal, 0);
+        }
+
+        function syncAdminFromPercent() {
+            if (currentAdminMode === 'free') return;
+            const pct = parseFloat(document.getElementById('input-biaya-admin-pct').value) || 0;
+            if (pct > 0) handleAdminPercentInput();
+        }
+
+        // Sinkronisasi Biaya Admin: dari Rp ke %
+        function syncAdminPercentFromNominal() {
+            const otr = parseIndoNumber(document.getElementById('input-otr').value);
+            const nominal = parseIndoNumber(document.getElementById('input-biaya-admin').value);
+            const pct = otr > 0 ? parseFloat(((nominal / otr) * 100).toFixed(2)) : 0;
+            document.getElementById('input-biaya-admin-pct').value = pct;
+        }
+
+        // Sinkronisasi Admin Lain-lain: dari % ke Rp
+        function handleAdminLainPercentInput() {
+            const otr = parseIndoNumber(document.getElementById('input-otr').value);
+            const pct = parseFloat(document.getElementById('input-admin-lain-pct').value) || 0;
+            const nominal = Math.round((otr * pct) / 100);
+            document.getElementById('input-admin-lain').value = formatNumberInput(nominal, 0);
+        }
+
+        function syncAdminLainFromPercent() {
+            const pct = parseFloat(document.getElementById('input-admin-lain-pct').value) || 0;
+            if (pct > 0) handleAdminLainPercentInput();
+        }
+
+        // Sinkronisasi Admin Lain-lain: dari Rp ke %
+        function syncAdminLainPercentFromNominal() {
+            const otr = parseIndoNumber(document.getElementById('input-otr').value);
+            const nominal = parseIndoNumber(document.getElementById('input-admin-lain').value);
+            const pct = otr > 0 ? parseFloat(((nominal / otr) * 100).toFixed(2)) : 0;
+            document.getElementById('input-admin-lain-pct').value = pct;
         }
 
         // Pilih Preset Bunga Bulanan (0.99%, 1.99%, 2.49%)
@@ -808,6 +860,7 @@
             document.getElementById('input-asuransi-jiwa').value = formatNumberInput(preset.asuransiJiwa, 2);
             document.getElementById('input-biaya-lain').value = formatNumberInput(preset.biayaLain, 2);
             document.getElementById('input-admin-lain').value = '0';
+            document.getElementById('input-admin-lain-pct').value = '0';
             document.getElementById('select-admin-lain-mode').value = 'as_loan';
             document.getElementById('input-flat-rate').value = preset.flatRate.toFixed(2);
             document.getElementById('input-monthly-rate').value = (preset.flatRate / 12).toFixed(2);
@@ -832,6 +885,7 @@
             document.getElementById('input-asuransi-jiwa').value = formatNumberInput(asuransiJiwa, 2);
             document.getElementById('input-biaya-lain').value = formatNumberInput(biayaLain, 2);
             document.getElementById('input-admin-lain').value = '0';
+            document.getElementById('input-admin-lain-pct').value = '0';
 
             if (showNotif) {
                 showToast('Biaya kapitalisasi & admin lain-lain direset');
