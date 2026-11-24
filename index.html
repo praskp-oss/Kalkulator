@@ -247,11 +247,22 @@
                                 <!-- Asuransi Aset -->
                                 <div>
                                     <div class="flex justify-between text-xs mb-1">
-                                        <label class="text-slate-600 font-medium">Asuransi Aset (<span id="rate-aset-label">3,75%</span>)</label>
+                                        <label class="text-slate-600 font-medium">Asuransi Barang / Aset (<span id="rate-aset-label">6,255%</span>)</label>
                                     </div>
                                     <div class="relative">
                                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-xs font-semibold">Rp</span>
-                                        <input type="text" id="input-asuransi-aset" value="282.225,6" oninput="handleDecimalCurrencyInput(this); calculateInstallment();" class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <input type="text" id="input-asuransi-aset" value="470.376" oninput="handleDecimalCurrencyInput(this); calculateInstallment();" class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <!-- Asuransi Jiwa -->
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <label class="text-slate-600 font-medium">Asuransi Jiwa (<span id="rate-jiwa-label">7,5%</span>)</label>
+                                    </div>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-xs font-semibold">Rp</span>
+                                        <input type="text" id="input-asuransi-jiwa" value="564.000" oninput="handleDecimalCurrencyInput(this); calculateInstallment();" class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 font-semibold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                                     </div>
                                 </div>
 
@@ -505,8 +516,8 @@
                 name: 'Elektronik',
                 flatRate: STANDARD_ANNUAL_RATE,
                 oldContractRate: 56.42,
-                asetInsuranceRatio: 0.03753, // ~3.753% dari OTR
-                defaultLifeInsurance: 155500,
+                asetInsuranceRatio: 0.06255, // 6,255% dari OTR
+                lifeInsuranceRatio: 0.075,   // 7,5% dari OTR
                 defaultOtherFeeRatio: 0.0,
                 presets: [
                     {
@@ -515,9 +526,9 @@
                         otr: 7520000,
                         dp: 0,
                         tenor: 9,
-                        asuransiAset: 282225.60,
-                        asuransiJiwa: 0,
-                        biayaLain: 349500, // Kapitalisasi selisih ke NTF 8.151.725,60
+                        asuransiAset: 470376,
+                        asuransiJiwa: 564000,
+                        biayaLain: 349500,
                         flatRate: STANDARD_ANNUAL_RATE,
                         oldRate: 56.42
                     },
@@ -527,9 +538,9 @@
                         otr: 3450000,
                         dp: 0,
                         tenor: 9,
-                        asuransiAset: 129478.50,
-                        asuransiJiwa: 155500,
-                        biayaLain: 11000, // Kapitalisasi ke NTF 3.745.978,50
+                        asuransiAset: 215797.50,
+                        asuransiJiwa: 258750,
+                        biayaLain: 11000,
                         flatRate: STANDARD_ANNUAL_RATE,
                         oldRate: 56.42
                     }
@@ -539,8 +550,8 @@
                 name: 'Gadget',
                 flatRate: STANDARD_ANNUAL_RATE,
                 oldContractRate: 56.44,
-                asetInsuranceRatio: 0.05004, // ~5.004% dari OTR
-                defaultLifeInsurance: 144000,
+                asetInsuranceRatio: 0.06255, // 6,255% dari OTR
+                lifeInsuranceRatio: 0.075,   // 7,5% dari OTR
                 defaultOtherFeeRatio: 0.0780, // ~7.80% dari OTR (Provisi)
                 presets: [
                     {
@@ -549,9 +560,9 @@
                         otr: 2399000,
                         dp: 0,
                         tenor: 12,
-                        asuransiAset: 120045.96,
-                        asuransiJiwa: 144000,
-                        biayaLain: 198122, // Provisi 187.122 + penyesuaian 11.000 -> NTF 2.861.167,96
+                        asuransiAset: 150057.45,
+                        asuransiJiwa: 179925,
+                        biayaLain: 198122,
                         flatRate: STANDARD_ANNUAL_RATE,
                         oldRate: 56.44
                     }
@@ -628,14 +639,16 @@
                 tabGad.className = 'flex-1 flex items-center justify-between px-5 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 text-slate-600 hover:bg-slate-50';
                 catPill.textContent = 'ELEKTRONIK';
                 catPill.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-blue-100 text-blue-700';
-                document.getElementById('rate-aset-label').textContent = '3,75%';
+                document.getElementById('rate-aset-label').textContent = '6,255%';
+                document.getElementById('rate-jiwa-label').textContent = '7,5%';
                 oldRateSublabel.textContent = '56,42%/thn';
             } else {
                 tabGad.className = 'flex-1 flex items-center justify-between px-5 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 bg-indigo-600 text-white shadow-sm';
                 tabElek.className = 'flex-1 flex items-center justify-between px-5 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 text-slate-600 hover:bg-slate-50';
                 catPill.textContent = 'GADGET';
                 catPill.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-indigo-100 text-indigo-700';
-                document.getElementById('rate-aset-label').textContent = '5,00%';
+                document.getElementById('rate-aset-label').textContent = '6,255%';
+                document.getElementById('rate-jiwa-label').textContent = '7,5%';
                 oldRateSublabel.textContent = '56,44%/thn';
             }
 
@@ -823,7 +836,7 @@
             const otr = parseIndoNumber(document.getElementById('input-otr').value);
 
             const asuransiAset = Math.round(otr * cfg.asetInsuranceRatio * 100) / 100;
-            const asuransiJiwa = otr > 0 ? cfg.defaultLifeInsurance : 0;
+            const asuransiJiwa = Math.round(otr * cfg.lifeInsuranceRatio * 100) / 100;
             const biayaLain = Math.round(otr * cfg.defaultOtherFeeRatio);
 
             document.getElementById('input-asuransi-aset').value = formatNumberInput(asuransiAset, 2);
